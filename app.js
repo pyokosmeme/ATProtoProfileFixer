@@ -30,6 +30,7 @@ const elements = {
 const state = {
   session: null,
   currentRecord: null,
+  currentRecordCid: null,
   avatar: {
     image: null,
     file: null,
@@ -200,6 +201,7 @@ async function createSession() {
 function clearSession() {
   setSession(null);
   state.currentRecord = null;
+  state.currentRecordCid = null;
   appendLog('Session cleared.');
   renderCurrentProfile(null);
   seedEditorFromRecord(null);
@@ -260,6 +262,7 @@ async function loadProfile() {
     });
     const data = await apiFetch(`com.atproto.repo.getRecord?${params.toString()}`);
     state.currentRecord = data?.value || null;
+    state.currentRecordCid = data?.cid || null;
     appendLog('Profile loaded.', data);
     renderCurrentProfile(state.currentRecord);
     seedEditorFromRecord(state.currentRecord);
@@ -267,6 +270,7 @@ async function loadProfile() {
     if (error.status === 404) {
       appendLog('Profile record not found; you can create one now.', null, 'error');
       state.currentRecord = null;
+      state.currentRecordCid = null;
       renderCurrentProfile(null);
       seedEditorFromRecord(null);
     } else {
@@ -652,8 +656,11 @@ async function saveProfile() {
       rkey: 'self',
       record,
       validate: true,
-      swapRecord: null,
     };
+
+    if (state.currentRecordCid) {
+      payload.swapRecord = state.currentRecordCid;
+    }
 
     appendLog('Sending profile update...');
     const response = await apiFetch('com.atproto.repo.putRecord', {
