@@ -613,7 +613,7 @@ async function saveProfile() {
     }
 
     if (elements.clearBio.checked) {
-      record.description = null;
+      delete record.description;
     } else {
       const description = elements.description.value.trim();
       if (description) {
