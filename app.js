@@ -628,20 +628,16 @@ async function saveProfile() {
     const avatarOmitted = avatarAction === null;
     const bannerOmitted = bannerAction === null;
 
-    if (avatarAction === 'null') {
-      record.avatar = null;
+    if (avatarAction === 'remove') {
+      delete record.avatar;
     } else if (avatarAction && avatarAction.blob) {
       record.avatar = avatarAction.blob;
-    } else if (avatarOmitted) {
-      delete record.avatar;
     }
 
-    if (bannerAction === 'null') {
-      record.banner = null;
+    if (bannerAction === 'remove') {
+      delete record.banner;
     } else if (bannerAction && bannerAction.blob) {
       record.banner = bannerAction.blob;
-    } else if (bannerOmitted) {
-      delete record.banner;
     }
 
     const force = elements.forceRewrite.checked;
@@ -679,7 +675,7 @@ async function saveProfile() {
 
 async function maybeUploadAvatar() {
   if (elements.clearAvatar.checked) {
-    return 'null';
+    return 'remove';
   }
   if (!state.avatar.image || !state.avatar.file) {
     return null;
@@ -699,7 +695,7 @@ async function maybeUploadAvatar() {
 
 async function maybeUploadBanner() {
   if (elements.clearBanner.checked) {
-    return 'null';
+    return 'remove';
   }
   if (!state.banner.file) {
     return null;
