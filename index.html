@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bluesky Profile Fixer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Bluesky Profile Fixer</h1>
+    <p class="tagline">Repair avatar/blob issues after a PDS migration and safely edit your profile.</p>
+  </header>
+
+  <main>
+    <section id="auth" class="card">
+      <h2>Authenticate</h2>
+      <div class="field-grid">
+        <label for="pds">PDS URL</label>
+        <input id="pds" placeholder="https://api.bsky.app" />
+
+        <label for="handle">Handle or DID</label>
+        <input id="handle" placeholder="yourname.bsky.social" />
+
+        <label for="password">App Password</label>
+        <div class="password-row">
+          <input id="password" placeholder="App Password" type="password" autocomplete="current-password" />
+          <button id="clearPassword" class="ghost" type="button" title="Clear password field">✕</button>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <label for="credsfile">Load credentials JSON (local)</label>
+        <input id="credsfile" type="file" accept="application/json" />
+      </div>
+
+      <div class="button-row">
+        <button id="login" type="button">Create Session</button>
+        <button id="logout" type="button" class="ghost" disabled>Clear Session</button>
+      </div>
+      <dl id="sessionInfo" class="session-info hidden"></dl>
+    </section>
+
+    <section id="profile" class="card" aria-disabled="true">
+      <h2>Current Profile</h2>
+      <div id="current" class="current-profile">Not loaded.</div>
+
+      <h3>Edit Profile</h3>
+      <div class="field-grid">
+        <label for="displayName">Display Name <span class="counter" id="displayNameCount">0 / 64</span></label>
+        <input id="displayName" maxlength="64" placeholder="Display name" />
+
+        <label for="description">Bio / Description <span class="counter" id="descriptionCount">0 / 256</span></label>
+        <textarea id="description" maxlength="256" rows="4" placeholder="Tell the network who you are"></textarea>
+        <label class="checkbox"><input type="checkbox" id="clearBio" /> Set bio to null (clear on server)</label>
+      </div>
+
+      <div class="uploader">
+        <h4>Avatar</h4>
+        <p class="hint">Upload a new square image. Use the zoom slider and drag the image inside the square to crop.</p>
+        <div class="uploader-controls">
+          <input id="avatarFile" type="file" accept="image/*" />
+          <label class="checkbox"><input type="checkbox" id="clearAvatar" /> Set avatar to null</label>
+        </div>
+        <div class="cropper">
+          <canvas id="avatarCanvas" width="220" height="220" aria-label="Avatar preview"></canvas>
+          <div class="slider-row">
+            <label for="avatarZoom">Zoom</label>
+            <input id="avatarZoom" type="range" min="1" max="3" step="0.01" value="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="uploader">
+        <h4>Banner</h4>
+        <p class="hint">Wide image recommended (3:1). Preview shown below.</p>
+        <div class="uploader-controls">
+          <input id="bannerFile" type="file" accept="image/*" />
+          <label class="checkbox"><input type="checkbox" id="clearBanner" /> Set banner to null</label>
+        </div>
+        <canvas id="bannerCanvas" width="420" height="140" aria-label="Banner preview"></canvas>
+      </div>
+
+      <div class="field-grid">
+        <label class="checkbox"><input type="checkbox" id="forceRewrite" /> Force rewrite even if unchanged</label>
+      </div>
+
+      <div class="button-row">
+        <button id="save" type="button">Save Profile</button>
+        <button id="refresh" type="button" class="ghost">Reload Profile</button>
+      </div>
+    </section>
+  </main>
+
+  <section class="card log-card">
+    <h2>Diagnostics &amp; Log</h2>
+    <p class="hint">Responses and errors from the AT Protocol API are listed here.</p>
+    <pre id="log" aria-live="polite"></pre>
+  </section>
+
+  <footer class="app-footer">
+    <p>Use with a dedicated Bluesky app password. Credentials stay in your browser session only.</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
